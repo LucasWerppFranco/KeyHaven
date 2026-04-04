@@ -17,7 +17,7 @@ pub struct VaultMeta {
 }
 
 /// A vault entry (password record)
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct VaultEntry {
     pub id: i64,
     pub title: String,
@@ -26,12 +26,12 @@ pub struct VaultEntry {
     pub url: Option<String>,
     pub notes: Option<String>,
     pub tags: Option<String>,
-    pub created_at: String,
-    pub modified_at: String,
+    pub created_at: i64,
+    pub updated_at: i64,
 }
 
 /// New entry to be added
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct NewEntry {
     pub title: String,
     pub username: Option<String>,
@@ -42,7 +42,7 @@ pub struct NewEntry {
 }
 
 /// Update to an existing entry
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct EntryUpdate {
     pub id: i64,
     pub title: Option<String>,

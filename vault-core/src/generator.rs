@@ -3,12 +3,11 @@
 use rand::{distributions::Alphanumeric, Rng};
 
 /// Strength analysis result
-#[derive(Debug)]
-pub struct PasswordStrength {
-    pub entropy_bits: f64,
-    pub score: u8, // 0-4
-    pub label: String,
-    pub warning: Option<String>,
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PasswordStrength {
+    Weak,
+    Medium,
+    Strong,
 }
 
 /// Generate a random password of given length
@@ -73,29 +72,12 @@ pub fn check_strength(password: &str) -> PasswordStrength {
     let entropy_bits = (length as f64) * pool_size.log2();
 
     // Score based on entropy
-    let (score, label) = if entropy_bits < 25.0 {
-        (0, "very weak")
-    } else if entropy_bits < 50.0 {
-        (1, "weak")
+    if entropy_bits < 50.0 {
+        PasswordStrength::Weak
     } else if entropy_bits < 75.0 {
-        (2, "fair")
-    } else if entropy_bits < 100.0 {
-        (3, "strong")
+        PasswordStrength::Medium
     } else {
-        (4, "very strong")
-    };
-
-    let warning = if length < 8 {
-        Some("Password is too short".to_string())
-    } else {
-        None
-    };
-
-    PasswordStrength {
-        entropy_bits,
-        score,
-        label: label.to_string(),
-        warning,
+        PasswordStrength::Strong
     }
 }
 
@@ -119,9 +101,9 @@ mod tests {
     #[test]
     fn test_check_strength() {
         let strong = check_strength("a very long and complex passphrase!");
-        assert!(strong.score >= 3);
+        assert_eq!(strong, PasswordStrength::Strong);
 
         let weak = check_strength("123");
-        assert_eq!(weak.score, 0);
+        assert_eq!(weak, PasswordStrength::Weak);
     }
 }

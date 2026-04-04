@@ -1,0 +1,24 @@
+# Root workspace — manages all crates in the project
+[workspace]
+members = [
+    "vault-core",
+    "vault-daemon",
+    "vault-cli",
+]
+resolver = "2"
+
+# Shared dependencies across all crates
+[workspace.dependencies]
+serde        = { version = "1",    features = ["derive"] }
+serde_json   = "1"
+tokio        = { version = "1",    features = ["full"] }
+anyhow       = "1"
+thiserror    = "1"
+zeroize      = { version = "1",    features = ["derive"] }
+log          = "0.4"
+sqlx         = { version = "0.7",  features = ["sqlite", "runtime-tokio"] }
+aes-gcm      = "0.10"
+argon2       = "0.5"
+rand         = "0.8"
+hmac         = "0.12"
+sha2         = "0.10"

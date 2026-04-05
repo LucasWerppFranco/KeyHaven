@@ -8,32 +8,23 @@ pub async fn run(password: &str) -> Result<()> {
 
     // Check local strength
     let strength = vault_core::check_strength(password);
-    match strength {
-        vault_core::PasswordStrength::Weak => {
-            println!(
-                "{} Password strength: {}",
-                "⚠".red(),
-                "Weak".red().bold()
-            );
-            println!(
-                "   Recommendation: use at least 12 characters with letters, numbers, and symbols."
-            );
-        }
-        vault_core::PasswordStrength::Medium => {
-            println!(
-                "{} Password strength: {}",
-                "~".yellow(),
-                "Medium".yellow().bold()
-            );
-            println!("   The password is acceptable but could be improved.");
-        }
-        vault_core::PasswordStrength::Strong => {
-            println!(
-                "{} Password strength: {}",
-                "✓".green(),
-                "Strong".green().bold()
-            );
-        }
+    let label_colored = match strength.score {
+        0 | 1 => strength.label.red().bold(),
+        2 => strength.label.yellow().bold(),
+        _ => strength.label.green().bold(),
+    };
+    println!(
+        "{} Password strength: {} ({} bits)",
+        match strength.score {
+            0 | 1 => "⚠".red(),
+            2 => "~".yellow(),
+            _ => "✓".green(),
+        },
+        label_colored,
+        strength.entropy_bits
+    );
+    if let Some(warning) = &strength.warning {
+        println!("   {}", warning.yellow());
     }
 
     println!();

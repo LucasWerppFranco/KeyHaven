@@ -3,11 +3,12 @@
 use rand::{distributions::Alphanumeric, Rng};
 
 /// Strength analysis result
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PasswordStrength {
-    Weak,
-    Medium,
-    Strong,
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PasswordStrength {
+    pub entropy_bits: u32,
+    pub score: u8,              // 0-4
+    pub label: String,          // "weak", "fair", "good", "strong"
+    pub warning: Option<String>,
 }
 
 /// Generate a random password of given length
@@ -66,18 +67,29 @@ pub fn generate_passphrase(word_count: usize) -> String {
 pub fn check_strength(password: &str) -> PasswordStrength {
     let length = password.len();
 
-    // Calculate entropy (simplified)
+    // Calculate entropy
     // Assuming 95 printable ASCII chars for mixed passwords
     let pool_size: f64 = 95.0;
-    let entropy_bits = (length as f64) * pool_size.log2();
+    let entropy_bits = (length as f64) * pool_size.log2() as u32;
 
-    // Score based on entropy
-    if entropy_bits < 50.0 {
-        PasswordStrength::Weak
-    } else if entropy_bits < 75.0 {
-        PasswordStrength::Medium
+    // Determine score and label based on entropy
+    let (score, label, warning) = if entropy_bits < 30 {
+        (0, "very-weak".to_string(), Some("This password is too short".to_string()))
+    } else if entropy_bits < 50 {
+        (1, "weak".to_string(), Some("Consider using a longer password".to_string()))
+    } else if entropy_bits < 75 {
+        (2, "fair".to_string(), None)
+    } else if entropy_bits < 100 {
+        (3, "good".to_string(), None)
     } else {
-        PasswordStrength::Strong
+        (4, "strong".to_string(), None)
+    };
+
+    PasswordStrength {
+        entropy_bits: entropy_bits as u32,
+        score,
+        label,
+        warning,
     }
 }
 
@@ -101,9 +113,12 @@ mod tests {
     #[test]
     fn test_check_strength() {
         let strong = check_strength("a very long and complex passphrase!");
-        assert_eq!(strong, PasswordStrength::Strong);
+        assert_eq!(strong.label, "strong");
+        assert_eq!(strong.score, 4);
+        assert!(strong.entropy_bits >= 100);
 
         let weak = check_strength("123");
-        assert_eq!(weak, PasswordStrength::Weak);
+        assert_eq!(weak.label, "very-weak");
+        assert_eq!(weak.score, 0);
     }
 }

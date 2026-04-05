@@ -1,5 +1,5 @@
 # KeyHaven CLI Dockerfile
-FROM rust:1.75-slim-bookworm AS builder
+FROM rust:1.86-slim-bookworm AS builder
 
 WORKDIR /build
 
@@ -9,13 +9,38 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the entire workspace
-COPY Cargo.toml ./
+# Copy workspace source code
 COPY vault-core ./vault-core
+COPY vault-daemon ./vault-daemon
 COPY vault-cli ./vault-cli
 
-# Build the CLI in release mode
-RUN cargo build --release -p vault-cli
+# Patch comfy-table to version 6.x for compatibility
+RUN sed -i 's/comfy-table = "7"/comfy-table = "6"/' vault-cli/Cargo.toml
+
+# Create a minimal workspace Cargo.toml (without vault-desktop)
+RUN echo '[workspace]' > Cargo.toml && \
+    echo 'members = ["vault-core", "vault-daemon", "vault-cli"]' >> Cargo.toml && \
+    echo 'resolver = "2"' >> Cargo.toml && \
+    echo '' >> Cargo.toml && \
+    echo '[workspace.dependencies]' >> Cargo.toml && \
+    echo 'serde = { version = "1", features = ["derive"] }' >> Cargo.toml && \
+    echo 'serde_json = "1"' >> Cargo.toml && \
+    echo 'tokio = { version = "1", features = ["full"] }' >> Cargo.toml && \
+    echo 'anyhow = "1"' >> Cargo.toml && \
+    echo 'thiserror = "1"' >> Cargo.toml && \
+    echo 'zeroize = { version = "1", features = ["derive"] }' >> Cargo.toml && \
+    echo 'log = "0.4"' >> Cargo.toml && \
+    echo 'sqlx = { version = "0.7", features = ["sqlite", "runtime-tokio"] }' >> Cargo.toml && \
+    echo 'aes-gcm = "0.10"' >> Cargo.toml && \
+    echo 'argon2 = "0.5"' >> Cargo.toml && \
+    echo 'rand = "0.8"' >> Cargo.toml && \
+    echo 'hmac = "0.12"' >> Cargo.toml && \
+    echo 'sha2 = "0.10"' >> Cargo.toml
+
+# Update dependencies, pin comfy-table to compatible version, and build
+RUN cargo update && \
+    cargo update comfy-table --precise 6.2.0 2>/dev/null || true && \
+    cargo build --release -p vault-cli
 
 # Runtime stage
 FROM debian:bookworm-slim

@@ -37,15 +37,15 @@ pub async fn run(
 
         // Show password strength
         let strength = vault_core::check_strength(&password);
-        match strength {
-            vault_core::PasswordStrength::Weak => {
-                println!("{} Strength: Weak", "⚠".red());
+        match strength.score {
+            0 | 1 => {
+                println!("{} Strength: {} ({} bits)", "⚠".red(), strength.label.red(), strength.entropy_bits);
             }
-            vault_core::PasswordStrength::Medium => {
-                println!("{} Strength: Medium", "~".yellow());
+            2 => {
+                println!("{} Strength: {} ({} bits)", "~".yellow(), strength.label.yellow(), strength.entropy_bits);
             }
-            vault_core::PasswordStrength::Strong => {
-                println!("{} Strength: Strong", "✓".green());
+            _ => {
+                println!("{} Strength: {} ({} bits)", "✓".green(), strength.label.green(), strength.entropy_bits);
             }
         }
 

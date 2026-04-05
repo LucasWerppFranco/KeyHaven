@@ -30,7 +30,7 @@ This directory contains Docker infrastructure for testing the KeyHaven daemon an
 ### Build and Start
 
 ```bash
-cd /home/Midir/Projetos/KeyHaven/test
+cd test
 docker-compose up --build -d
 ```
 
@@ -86,11 +86,11 @@ docker-compose down -v
 
 ## Volume Persistence
 
-| Volume | Purpose | Path in Container |
-|--------|---------|-------------------|
-| `vault-data` | Encrypted vault database | `/data` |
-| `vault-socket` | Unix socket for daemon↔CLI communication | `/run/keyhaven` |
-| `vault-config` | Configuration files | `/config` |
+| Volume       | Purpose                                  | Path in Container |
+|--------------|------------------------------------------|-------------------|
+| `vault-data`   | Encrypted vault database                 | `/data`             |
+| `vault-socket` | Unix socket for daemon↔CLI communication | `/run/keyhaven`     |
+| `vault-config` | Configuration files                      | `/config`           |
 
 ## Troubleshooting
 

@@ -1,0 +1,31 @@
+[package]
+name = "vault-daemon"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+vault-core = { path = "../vault-core" }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Serialização
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Erros
+anyhow = "1"
+thiserror = "1"
+
+# Segurança de memória: zera bytes ao dropar
+zeroize = { version = "1", features = ["derive"] }
+
+# Config TOML
+toml = "0.8"
+
+# Paths XDG (~/.local/share, ~/.config, etc.)
+dirs = "5"
+
+# Logging
+log = "0.4"
+env_logger = "0.11"

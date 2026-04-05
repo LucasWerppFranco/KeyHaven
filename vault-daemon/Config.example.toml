@@ -1,0 +1,23 @@
+# ~/.config/vault/config.toml
+# Configuração do vault-daemon
+# Todos os campos são opcionais — os defaults funcionam sem este arquivo.
+
+# Caminho do banco de dados criptografado
+# Padrão: ~/.local/share/vault/vault.db
+# db_path = "/home/lucas/.local/share/vault/vault.db"
+
+# Caminho do Unix socket
+# Padrão: $XDG_RUNTIME_DIR/vault.sock (ex: /run/user/1000/vault.sock)
+# socket_path = "/run/user/1000/vault.sock"
+
+# Tempo de inatividade antes do auto-lock, em segundos
+# Padrão: 900 (15 minutos)
+# Use 0 para desabilitar o auto-lock (não recomendado)
+session_timeout = 900
+
+# ── Exemplo de configurações alternativas ───────────────────────────
+# Para sessões longas de trabalho (1 hora):
+# session_timeout = 3600
+#
+# Para segurança máxima (5 minutos):
+# session_timeout = 300

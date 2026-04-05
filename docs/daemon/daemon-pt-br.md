@@ -635,6 +635,6 @@ O daemon remove seu arquivo de socket na inicialização se ele existir (lida co
 
 ## Veja Também
 
-- [Visão Geral da Arquitetura](./architecture.md) - Design geral do sistema
-- [Detalhes de Criptografia](./crypto.md) - Criptografia e derivação de chaves
-- [Guia da CLI](./cli.md) - Uso do cliente de linha de comando
+- [Visão Geral da Arquitetura](../architecture.md) - Design geral do sistema
+- [Detalhes de Criptografia](../crypto.md) - Criptografia e derivação de chaves
+- [Guia da CLI](../cli/cli-pt-br.md) - Uso do cliente de linha de comando

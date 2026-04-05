@@ -1,0 +1,28 @@
+[package]
+name = "vault-desktop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Workspace dependencies
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+log = { workspace = true }
+zeroize = { workspace = true }
+
+# Tauri dependencies
+tauri = { version = "2.0", features = [] }
+tauri-plugin-shell = "2.0"
+
+# Vault core (our business logic)
+vault-core = { path = "../../vault-core" }
+
+# Utils
+dirs = "5"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

@@ -4,6 +4,7 @@ members = [
     "vault-core",
     "vault-daemon",
     "vault-cli",
+    "vault-desktop/src-tauri",
 ]
 resolver = "2"
 

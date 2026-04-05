@@ -629,6 +629,6 @@ The daemon removes its socket file on startup if it exists (handles previous cra
 
 ## See Also
 
-- [Architecture Overview](./architecture.md) - Overall system design
-- [Crypto Details](./crypto.md) - Encryption and key derivation
-- [CLI Guide](./cli.md) - Command-line client usage
+- [Architecture Overview](../architecture.md) - Overall system design
+- [Crypto Details](../crypto.md) - Encryption and key derivation
+- [CLI Guide](../cli/cli.md) - Command-line client usage

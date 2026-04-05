@@ -5,24 +5,24 @@ This directory contains Docker infrastructure for testing the KeyHaven daemon an
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Docker Network                          │
-│  ┌─────────────────────┐    ┌─────────────────────────────┐│
-│  │   keyhaven-daemon   │◄──►│        keyhaven-cli         ││
-│  │                     │    │                             ││
-│  │  - Holds vault.db   │    │  - CLI commands             ││
-│  │  - Manages socket   │    │  - Connects via socket      ││
-│  │  - Auto-locks       │    │                             ││
-│  └─────────────────────┘    └─────────────────────────────┘│
-│           │                            │                    │
-│           └────────────┬───────────────┘                    │
-│                        │                                    │
+┌──────────────────────────────────────────────────────────────┐
+│                    Docker Network                            │
+│  ┌─────────────────────┐    ┌─────────────────────────────┐  │
+│  │   keyhaven-daemon   │◄──►│        keyhaven-cli         │  │
+│  │                     │    │                             │  │
+│  │  - Holds vault.db   │    │  - CLI commands             │  │
+│  │  - Manages socket   │    │  - Connects via socket      │  │
+│  │  - Auto-locks       │    │                             │  │
+│  └─────────────────────┘    └─────────────────────────────┘  │
+│           │                            │                     │
+│           └────────────┬───────────────┘                     │
+│                        │                                     │
 │                 Shared Volumes                               │
-│         ┌──────────────┼──────────────┐                     │
-│         ▼              ▼              ▼                     │
-│    vault-data    vault-socket   vault-config                │
-│    (database)    (IPC comms)    (settings)                  │
-└─────────────────────────────────────────────────────────────┘
+│         ┌──────────────┼──────────────┐                      │
+│         ▼              ▼              ▼                      │
+│    vault-data    vault-socket   vault-config                 │
+│    (database)    (IPC comms)    (settings)                   │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ## Quick Start

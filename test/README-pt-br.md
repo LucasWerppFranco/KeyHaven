@@ -5,24 +5,24 @@ Este diretório contém a infraestrutura Docker para testar o daemon e a CLI do 
 ## Arquitetura
 
 ```
-┌─────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────┐
 │                    Rede Docker                               │
-│  ┌─────────────────────┐    ┌─────────────────────────────┐│
-│  │   keyhaven-daemon   │◄──►│        keyhaven-cli         ││
-│  │                     │    │                             ││
-│  │  - Mantém vault.db  │    │  - Comandos CLI             ││
-│  │  - Gerencia socket  │    │  - Conecta via socket       ││
-│  │  - Auto-bloqueio    │    │                             ││
-│  └─────────────────────┘    └─────────────────────────────┘│
-│           │                            │                    │
-│           └────────────┬───────────────┘                    │
-│                        │                                    │
+│  ┌─────────────────────┐    ┌─────────────────────────────┐  │
+│  │   keyhaven-daemon   │◄──►│        keyhaven-cli         │  │
+│  │                     │    │                             │  │
+│  │  - Mantém vault.db  │    │  - Comandos CLI             │  │
+│  │  - Gerencia socket  │    │  - Conecta via socket       │  │
+│  │  - Auto-bloqueio    │    │                             │  │
+│  └─────────────────────┘    └─────────────────────────────┘  │
+│           │                            │                     │
+│           └────────────┬───────────────┘                     │
+│                        │                                     │
 │                 Volumes Compartilhados                       │
-│         ┌──────────────┼──────────────┐                     │
-│         ▼              ▼              ▼                     │
-│    vault-data    vault-socket   vault-config                │
-│    (banco)        (comunicação)   (configurações)           │
-└─────────────────────────────────────────────────────────────┘
+│         ┌──────────────┼──────────────┐                      │
+│         ▼              ▼              ▼                      │
+│    vault-data    vault-socket   vault-config                 │
+│    (banco)        (comunicação)   (configurações)            │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ## Início Rápido

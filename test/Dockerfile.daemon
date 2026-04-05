@@ -1,0 +1,52 @@
+# KeyHaven Daemon Dockerfile
+FROM rust:1.75-slim-bookworm AS builder
+
+WORKDIR /build
+
+# Install dependencies required for building
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the entire workspace
+COPY Cargo.toml ./
+COPY vault-core ./vault-core
+COPY vault-daemon ./vault-daemon
+
+# Build the daemon in release mode
+RUN cargo build --release -p vault-daemon
+
+# Runtime stage
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    libsqlite3-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user for security
+RUN useradd -m -u 1000 keyhaven
+
+# Copy the built binary from builder
+COPY --from=builder /build/target/release/vault-daemon /app/vault-daemon
+
+# Create directories for vault data and config
+RUN mkdir -p /data /config /run/keyhaven && \
+    chown -R keyhaven:keyhaven /data /config /run/keyhaven /app
+
+USER keyhaven
+
+# Expose the Unix socket directory (mounted as volume)
+VOLUME ["/data", "/config", "/run/keyhaven"]
+
+# Environment variables
+ENV VAULT_DB_PATH=/data/vault.db
+ENV VAULT_SOCKET_PATH=/run/keyhaven/daemon.sock
+ENV RUST_LOG=info
+
+# Start the daemon
+CMD ["/app/vault-daemon"]

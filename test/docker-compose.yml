@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  # KeyHaven Daemon Service
+  daemon:
+    build:
+      context: ..
+      dockerfile: test/Dockerfile.daemon
+    container_name: keyhaven-daemon
+    volumes:
+      # Persistent storage for vault database
+      - vault-data:/data
+      # Shared socket directory (used for CLI communication)
+      - vault-socket:/run/keyhaven
+      # Config directory
+      - vault-config:/config
+    environment:
+      - RUST_LOG=info
+      - VAULT_DB_PATH=/data/vault.db
+      - VAULT_SOCKET_PATH=/run/keyhaven/daemon.sock
+    # Keep container running
+    stdin_open: true
+    tty: true
+    # Health check to ensure daemon is ready
+    healthcheck:
+      test: ["CMD", "test", "-S", "/run/keyhaven/daemon.sock"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    networks:
+      - keyhaven-network
+
+  # KeyHaven CLI Service
+  cli:
+    build:
+      context: ..
+      dockerfile: test/Dockerfile.cli
+    container_name: keyhaven-cli
+    volumes:
+      # Share the same data directory as daemon
+      - vault-data:/data
+      # Share socket for IPC communication
+      - vault-socket:/run/keyhaven
+      # Share config
+      - vault-config:/config
+    environment:
+      - VAULT_DB_PATH=/data/vault.db
+      - VAULT_SOCKET_PATH=/run/keyhaven/daemon.sock
+    # Override entrypoint to keep container alive for interactive use
+    entrypoint: ["/bin/sh", "-c", "sleep infinity"]
+    depends_on:
+      daemon:
+        condition: service_healthy
+    networks:
+      - keyhaven-network
+    # Interactive mode for CLI usage
+    stdin_open: true
+    tty: true
+
+volumes:
+  vault-data:
+    driver: local
+  vault-socket:
+    driver: local
+  vault-config:
+    driver: local
+
+networks:
+  keyhaven-network:
+    driver: bridge

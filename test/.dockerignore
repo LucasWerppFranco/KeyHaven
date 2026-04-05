@@ -1,0 +1,8 @@
+# Ignore unnecessary files for Docker build
+.git
+.github
+target/
+*.md
+docs/
+test/
+vault-desktop/

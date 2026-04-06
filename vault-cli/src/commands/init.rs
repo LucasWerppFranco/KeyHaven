@@ -19,11 +19,11 @@ pub async fn run(db_path: &Path) -> Result<()> {
             .with_context(|| format!("Failed to create directory: {}", parent.display()))?;
     }
 
-    println!("{}", "Initializing new vault...".bold().cyan());
     println!();
+    println!("{}", "  initializing new vault".dimmed());
 
     // Read master password
-    print!("Master password: ");
+    crate::ascii::print_minimal_prompt("master password: ");
     io::stdout().flush()?;
     let password = read_password()?;
 
@@ -33,7 +33,7 @@ pub async fn run(db_path: &Path) -> Result<()> {
         ));
     }
 
-    print!("Confirm password: ");
+    crate::ascii::print_minimal_prompt("confirm password: ");
     io::stdout().flush()?;
     let confirm = read_password()?;
 
@@ -45,17 +45,23 @@ pub async fn run(db_path: &Path) -> Result<()> {
     init_vault(&password, db_path).await?;
 
     println!();
+    crate::ascii::print_separator();
+    println!();
     println!(
-        "{} Vault initialized successfully at {}",
-        "✓".green().bold(),
+        "{} vault initialized",
+        "✓".green().bold()
+    );
+    println!(
+        "  {} {}",
+        "→".dimmed(),
         db_path.display().to_string().cyan()
     );
     println!();
     println!(
         "{}",
-        "IMPORTANT: Store your master password in a secure location. It cannot be recovered!"
+        "  important: store your master password securely. it cannot be recovered!"
             .yellow()
-            .bold()
+            .dimmed()
     );
 
     Ok(())

@@ -4,6 +4,7 @@ use anyhow::{Context, Result};
 use clap::Parser;
 use std::io::IsTerminal;
 
+mod ascii;
 mod cli;
 mod commands;
 
@@ -16,6 +17,11 @@ async fn main() -> Result<()> {
         colored::control::set_override(true);
     } else {
         colored::control::set_override(false);
+    }
+
+    // Display cover art at startup in interactive terminals
+    if std::io::stdout().is_terminal() {
+        ascii::display_cover();
     }
 
     let cli = Cli::parse();

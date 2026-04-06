@@ -33,7 +33,10 @@ fn parse_timeout(s: &str) -> Result<Duration> {
 }
 
 pub async fn run(timeout_str: &str, db_path: &Path) -> Result<()> {
-    print!("Master password: ");
+    println!();
+    println!("{}", "  unlocking vault".dimmed());
+
+    crate::ascii::print_minimal_prompt("master password: ");
     io::stdout().flush()?;
     let password = read_password()?;
 
@@ -45,12 +48,16 @@ pub async fn run(timeout_str: &str, db_path: &Path) -> Result<()> {
     spinner.finish_and_clear();
 
     // Store key in memory (simplified - in production would use daemon)
-    println!("{} Vault unlocked!", "✓".green().bold());
+    println!();
+    crate::ascii::print_separator();
+    println!();
+    println!("{} vault unlocked", "✓".green().bold());
 
     let timeout = parse_timeout(timeout_str)?;
     println!(
-        "Auto-lock after {} of inactivity",
-        humantime::format_duration(timeout)
+        "  {} auto-lock after {}",
+        "→".dimmed(),
+        humantime::format_duration(timeout).to_string().dimmed()
     );
 
     // Store key in temporary environment variable for subsequent commands

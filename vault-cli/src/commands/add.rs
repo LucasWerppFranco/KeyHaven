@@ -9,11 +9,11 @@ pub async fn run(
     key: &[u8],
     db_path: &std::path::Path,
 ) -> Result<()> {
-    println!("{}", "Adding new entry".bold().cyan());
     println!();
+    println!("{}", "  adding new entry".dimmed());
 
     // Title
-    print!("Title: ");
+    crate::ascii::print_minimal_prompt("title: ");
     io::stdout().flush()?;
     let mut title = String::new();
     io::stdin().read_line(&mut title)?;
@@ -24,7 +24,7 @@ pub async fn run(
     }
 
     // Username (optional)
-    print!("Username (leave blank if none): ");
+    crate::ascii::print_optional_prompt("username");
     io::stdout().flush()?;
     let mut username = String::new();
     io::stdin().read_line(&mut username)?;
@@ -38,16 +38,18 @@ pub async fn run(
     // Password
     let password = if gen {
         let pwd = vault_core::generate_password(20, true);
-        println!("Generated password: {}", pwd.green());
-        println!("Press Enter to continue...");
+        println!("  {} generated password: {}", "→".dimmed(), pwd.green());
+        println!("  press enter to continue...");
         io::stdin().read_line(&mut String::new())?;
         pwd
     } else {
-        let pwd1 = prompt_password("Password: ")?;
+        crate::ascii::print_minimal_prompt("password: ");
+        let pwd1 = prompt_password("")?;
         if pwd1.is_empty() {
             return Err(anyhow::anyhow!("Password cannot be empty"));
         }
-        let pwd2 = prompt_password("Confirm password: ")?;
+        crate::ascii::print_minimal_prompt("confirm password: ");
+        let pwd2 = prompt_password("")?;
         if pwd1 != pwd2 {
             return Err(anyhow::anyhow!("Passwords do not match"));
         }
@@ -56,7 +58,7 @@ pub async fn run(
 
     // URL
     let url = url.or_else(|| {
-        print!("URL (leave blank if none): ");
+        crate::ascii::print_optional_prompt("url");
         io::stdout().flush().ok()?;
         let mut input = String::new();
         io::stdin().read_line(&mut input).ok()?;
@@ -69,7 +71,7 @@ pub async fn run(
     });
 
     // Notes
-    print!("Notes (leave blank if none): ");
+    crate::ascii::print_optional_prompt("notes");
     io::stdout().flush()?;
     let mut notes = String::new();
     io::stdin().read_line(&mut notes)?;
@@ -93,11 +95,10 @@ pub async fn run(
     let id = vault_core::add_entry(key, db_path, entry).await?;
 
     println!();
-    println!(
-        "{} Entry added successfully (ID: {})",
-        "✓".green().bold(),
-        id.to_string().cyan()
-    );
+    crate::ascii::print_separator();
+    println!();
+    println!("{} entry added", "✓".green().bold());
+    println!("  {} id: {}", "→".dimmed(), id.to_string().cyan());
 
     Ok(())
 }

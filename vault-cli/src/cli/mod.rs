@@ -51,6 +51,8 @@ pub enum Commands {
 
     /// Add a new entry interactively
     Add {
+        /// Entry title (optional, prompts if not provided)
+        title: Option<String>,
         #[arg(long)]
         url: Option<String>,
         #[arg(long)]

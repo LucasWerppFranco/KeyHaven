@@ -2,8 +2,8 @@ use anyhow::Result;
 use colored::Colorize;
 
 pub fn run() -> Result<()> {
-    // Remove session environment variable
-    std::env::remove_var("KEYHAVEN_SESSION_KEY");
+    // Clear the session (both file and environment)
+    crate::session::clear_session()?;
 
     println!("{} Vault locked.", "🔒".yellow().bold());
     Ok(())

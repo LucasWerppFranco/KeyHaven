@@ -7,6 +7,7 @@ use std::io::IsTerminal;
 mod ascii;
 mod cli;
 mod commands;
+mod session;
 
 use cli::{Cli, Commands};
 
@@ -61,9 +62,9 @@ async fn main() -> Result<()> {
             commands::get::run(&query, copy, show, &field, &key, &db_path).await?;
         }
 
-        Commands::Add { url, gen } => {
+        Commands::Add { title, url, gen } => {
             let key = load_key()?;
-            commands::add::run(url, gen, &key, &db_path).await?;
+            commands::add::run(title, url, gen, &key, &db_path).await?;
         }
 
         Commands::Gen {
@@ -88,11 +89,8 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-/// Load session key from temporary environment variable
+/// Load session key from file or environment
 fn load_key() -> Result<Vec<u8>> {
-    let key_hex = std::env::var("KEYHAVEN_SESSION_KEY").context(
-        "Vault is locked. Run 'keyhaven unlock' first.",
-    )?;
-
-    hex::decode(&key_hex).context("Invalid session. Run 'keyhaven unlock' again.")
+    session::load_session_key()
+        .context("Vault is locked. Run 'keyhaven unlock' first.")
 }

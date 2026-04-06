@@ -47,7 +47,9 @@ pub async fn run(timeout_str: &str, db_path: &Path) -> Result<()> {
 
     spinner.finish_and_clear();
 
-    // Store key in memory (simplified - in production would use daemon)
+    // Store key in session file for persistence across processes
+    crate::session::save_session_key(&key)?;
+
     println!();
     crate::ascii::print_separator();
     println!();
@@ -59,10 +61,6 @@ pub async fn run(timeout_str: &str, db_path: &Path) -> Result<()> {
         "→".dimmed(),
         humantime::format_duration(timeout).to_string().dimmed()
     );
-
-    // Store key in temporary environment variable for subsequent commands
-    // (In real production, the daemon would hold the key)
-    std::env::set_var("KEYHAVEN_SESSION_KEY", hex::encode(&key));
 
     Ok(())
 }

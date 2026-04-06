@@ -1,9 +1,10 @@
 use anyhow::Result;
 use colored::Colorize;
-use rpassword::prompt_password;
+use rpassword::read_password;
 use std::io::{self, Write};
 
 pub async fn run(
+    title_arg: Option<String>,
     url: Option<String>,
     gen: bool,
     key: &[u8],
@@ -12,16 +13,20 @@ pub async fn run(
     println!();
     println!("{}", "  adding new entry".dimmed());
 
-    // Title
-    crate::ascii::print_minimal_prompt("title: ");
-    io::stdout().flush()?;
-    let mut title = String::new();
-    io::stdin().read_line(&mut title)?;
-    let title = title.trim();
-
-    if title.is_empty() {
-        return Err(anyhow::anyhow!("Title is required"));
-    }
+    // Title: use CLI argument if provided, otherwise prompt
+    let title = if let Some(title) = title_arg {
+        title
+    } else {
+        crate::ascii::print_minimal_prompt("title: ");
+        io::stdout().flush()?;
+        let mut input = String::new();
+        io::stdin().read_line(&mut input)?;
+        let trimmed = input.trim();
+        if trimmed.is_empty() {
+            return Err(anyhow::anyhow!("Title is required"));
+        }
+        trimmed.to_string()
+    };
 
     // Username (optional)
     crate::ascii::print_optional_prompt("username");
@@ -44,12 +49,14 @@ pub async fn run(
         pwd
     } else {
         crate::ascii::print_minimal_prompt("password: ");
-        let pwd1 = prompt_password("")?;
+        io::stdout().flush()?;
+        let pwd1 = read_password()?;
         if pwd1.is_empty() {
             return Err(anyhow::anyhow!("Password cannot be empty"));
         }
         crate::ascii::print_minimal_prompt("confirm password: ");
-        let pwd2 = prompt_password("")?;
+        io::stdout().flush()?;
+        let pwd2 = read_password()?;
         if pwd1 != pwd2 {
             return Err(anyhow::anyhow!("Passwords do not match"));
         }
@@ -84,7 +91,7 @@ pub async fn run(
 
     // Create the entry
     let entry = vault_core::NewEntry {
-        title: title.to_string(),
+        title,
         username,
         password,
         url,

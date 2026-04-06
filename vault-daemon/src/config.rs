@@ -19,16 +19,31 @@ pub struct Config {
 
 impl Config {
     pub fn load() -> anyhow::Result<Self> {
+        // First check environment variables, then fall back to config file or defaults
+        let db_path = std::env::var_os("VAULT_DB_PATH")
+            .map(PathBuf::from)
+            .unwrap_or_else(default_db_path);
+
+        let socket_path = std::env::var_os("VAULT_SOCKET_PATH")
+            .map(PathBuf::from)
+            .unwrap_or_else(default_socket_path);
+
         let config_path = dirs::config_dir()
             .unwrap_or_else(|| PathBuf::from("~/.config"))
             .join("vault/config.toml");
 
-        if config_path.exists() {
+        let mut config = if config_path.exists() {
             let text = std::fs::read_to_string(&config_path)?;
-            Ok(toml::from_str(&text)?)
+            toml::from_str(&text)?
         } else {
-            Ok(Self::default())
-        }
+            Self::default()
+        };
+
+        // Environment variables override config file values
+        config.db_path = db_path;
+        config.socket_path = socket_path;
+
+        Ok(config)
     }
 }
 

@@ -70,7 +70,7 @@ pub fn check_strength(password: &str) -> PasswordStrength {
     // Calculate entropy
     // Assuming 95 printable ASCII chars for mixed passwords
     let pool_size: f64 = 95.0;
-    let entropy_bits = (length as f64) * pool_size.log2() as u32;
+    let entropy_bits = ((length as f64) * pool_size.log2()) as u32;
 
     // Determine score and label based on entropy
     let (score, label, warning) = if entropy_bits < 30 {

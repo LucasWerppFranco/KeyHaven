@@ -181,3 +181,12 @@ make shell
 # Parar
 make stop
 ```
+
+## Alternativa: Testes Nativos
+
+Se as builds do Docker falharem devido a timeouts de rede, você pode executar os testes nativamente:
+
+```bash
+# Executar testes nos crates principais (exclui a GUI desktop)
+cargo test -p vault-core -p vault-daemon -p vault-cli
+```

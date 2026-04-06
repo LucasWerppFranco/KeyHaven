@@ -120,6 +120,64 @@ docker-compose down -v
 docker-compose up --build -d
 ```
 
+## Using the Helper Script
+
+A `keyhaven.sh` script is available for convenience:
+
+```bash
+# Build and start
+./keyhaven.sh init
+
+# Run CLI commands
+./keyhaven.sh cli --help
+./keyhaven.sh cli init
+./keyhaven.sh cli unlock
+./keyhaven.sh cli list
+
+# Open interactive shell
+./keyhaven.sh shell
+
+# Check status
+./keyhaven.sh status
+
+# View logs
+./keyhaven.sh logs daemon
+
+# Stop
+./keyhaven.sh stop
+
+# Reset (deletes data!)
+./keyhaven.sh reset
+```
+
+## Using the Makefile
+
+Alternatively, use Make:
+
+```bash
+# Build and start
+make init
+
+# Run CLI commands
+make cli cmd=--help
+make cli cmd=init
+
+# Open shell
+make shell
+
+# Stop
+make stop
+```
+
+## Alternative: Native Testing
+
+If Docker builds fail due to network timeouts, you can run tests natively:
+
+```bash
+# Run tests on core crates (excludes desktop GUI)
+cargo test -p vault-core -p vault-daemon -p vault-cli
+```
+
 ## Development Workflow
 
 When making changes to the code:

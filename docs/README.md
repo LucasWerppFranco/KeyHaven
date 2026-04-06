@@ -2,6 +2,39 @@
 
 Welcome to the KeyHaven documentation. This directory contains guides and references for understanding and working with KeyHaven.
 
+## Project Structure
+
+```
+KeyHaven/
+├── docs/                   # Documentation files
+│   ├── cli/               # CLI documentation
+│   ├── daemon/            # Daemon documentation
+│   ├── database/          # Database schema and architecture
+│   └── desktop/           # Desktop app documentation
+├── test/                  # Docker-based testing environment
+├── vault/                 # Legacy vault directory (pre-crate structure)
+├── vault-cli/             # Command-line interface (Rust)
+├── vault-core/            # Core library: crypto, storage, generator
+├── vault-daemon/          # Background service for IPC
+├── vault-desktop/         # Tauri-based desktop application
+│   └── src-tauri/        # Rust backend for the desktop app
+├── vault-extension/       # Browser extension (future)
+├── Cargo.toml            # Workspace root configuration
+└── README.md             # Project overview
+```
+
+### Directory Descriptions
+
+| Directory | Purpose | Language |
+|-----------|---------|----------|
+| `docs/` | Technical documentation, guides, and architecture references | Markdown |
+| `test/` | Docker Compose environment for integration testing | Docker/YAML |
+| `vault-cli/` | Interactive CLI tool for vault management. Communicates with daemon via Unix socket. | Rust |
+| `vault-core/` | **Core library** - encryption (AES-256-GCM), password hashing (Argon2id), SQLite storage, password generator, and search matching. Used by all other components. | Rust |
+| `vault-daemon/` | Background service that holds the decrypted vault in memory. Handles IPC via Unix sockets with auto-lock timeout. | Rust |
+| `vault-desktop/` | Cross-platform GUI application built with Tauri (React frontend + Rust backend) | Rust/TypeScript/React |
+| `vault-extension/` | Browser extension for autofill (planned feature) | TBD |
+
 ## Available Documentation
 
 ### General

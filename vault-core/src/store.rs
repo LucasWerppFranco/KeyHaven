@@ -377,7 +377,8 @@ pub async fn add_entry(key: &[u8], db_path: &Path, entry: NewEntry) -> Result<i6
     Ok(id)
 }
 
-/// Update an existing entry
+/// Update an existing entry.
+/// Uses COALESCE to only update fields that are provided (Some), keeping existing values for None fields.
 pub async fn update_entry(key: &[u8], db_path: &Path, update: EntryUpdate) -> Result<()> {
     let connect_options = SqliteConnectOptions::new()
         .filename(db_path);
@@ -389,52 +390,7 @@ pub async fn update_entry(key: &[u8], db_path: &Path, update: EntryUpdate) -> Re
 
     let now = chrono::Utc::now().timestamp();
 
-    // Build dynamic query based on which fields are provided
-    let mut updates = Vec::new();
-    let mut has_update = false;
-
-    if update.title.is_some() {
-        updates.push("title = ?1");
-        has_update = true;
-    }
-
-    if update.username.is_some() {
-        updates.push("username = ?2");
-        has_update = true;
-    }
-
-    if update.password.is_some() {
-        updates.push("password = ?3");
-        has_update = true;
-    }
-
-    if update.url.is_some() {
-        updates.push("url = ?4");
-        has_update = true;
-    }
-
-    if update.notes.is_some() {
-        updates.push("notes = ?5");
-        has_update = true;
-    }
-
-    if update.tags.is_some() {
-        updates.push("tags = ?6");
-        has_update = true;
-    }
-
-    if !has_update {
-        return Ok(());
-    }
-
-    updates.push("updated_at = ?7");
-
-    let query_str = format!(
-        "UPDATE entries SET {} WHERE id = ?8",
-        updates.join(", ")
-    );
-
-    // Encrypt sensitive fields
+    // Encrypt sensitive fields (re-encrypt even if unchanged - deterministic query structure)
     let username_blob = update
         .username
         .as_ref()
@@ -453,21 +409,33 @@ pub async fn update_entry(key: &[u8], db_path: &Path, update: EntryUpdate) -> Re
 
     let tags_str = update.tags.map(|t| t.join(","));
 
-    let mut query = sqlx::query(&query_str);
-
-    // Bind values in order
-    if update.title.is_some() {
-        query = query.bind(&update.title);
-    }
-    query = query.bind(&username_blob);
-    query = query.bind(&password_blob);
-    query = query.bind(&update.url);
-    query = query.bind(&notes_blob);
-    query = query.bind(&tags_str);
-    query = query.bind(now);
-    query = query.bind(update.id);
-
-    query.execute(&pool).await.context("Failed to update entry")?;
+    // Static query using COALESCE for optional updates
+    // For BLOB fields: use the new encrypted value if provided, else keep existing
+    // For TEXT fields: use the new value if provided, else keep existing
+    sqlx::query(
+        r#"
+        UPDATE entries SET
+            title = COALESCE(?1, title),
+            username = COALESCE(?2, username),
+            password = COALESCE(?3, password),
+            url = COALESCE(?4, url),
+            notes = COALESCE(?5, notes),
+            tags = COALESCE(?6, tags),
+            updated_at = ?7
+        WHERE id = ?8
+        "#,
+    )
+    .bind(&update.title)
+    .bind(&username_blob)
+    .bind(&password_blob)
+    .bind(&update.url)
+    .bind(&notes_blob)
+    .bind(&tags_str)
+    .bind(now)
+    .bind(update.id)
+    .execute(&pool)
+    .await
+    .context("Failed to update entry")?;
 
     pool.close().await;
 

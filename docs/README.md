@@ -26,6 +26,11 @@ Welcome to the KeyHaven documentation. This directory contains guides and refere
 - **[desktop/desktop-frontend.md](./desktop/desktop-frontend.md)** — Frontend (React/TypeScript) development guide
 - **[desktop/desktop-backend.md](./desktop/desktop-backend.md)** — Backend (Rust/Tauri) implementation details
 
+### Database
+
+- **[database/database.md](./database/database.md)** — SQLite database architecture and field-by-field encryption
+- **[database/schema-reference.md](./database/schema-reference.md)** — Complete schema reference for tables and columns
+
 ## Quick Navigation
 
 | If you want to...             | Read this                                      |
@@ -37,6 +42,8 @@ Welcome to the KeyHaven documentation. This directory contains guides and refere
 | Work on the frontend code     | [desktop/desktop-frontend.md](./desktop/desktop-frontend.md)                    |
 | Work on the backend/Rust code | [desktop/desktop-backend.md](./desktop/desktop-backend.md)                     |
 | Understand the architecture   | [desktop/desktop-architecture.md](./desktop/desktop-architecture.md)                |
+| Learn about the database      | [database/database.md](./database/database.md)                         |
+| View database schema          | [database/schema-reference.md](./database/schema-reference.md)                    |
 
 ## Contributing
 

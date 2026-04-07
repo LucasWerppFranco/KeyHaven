@@ -41,7 +41,7 @@ This is the project's folder structure so far; it's also available in [/doc](doc
 
 ```
 KeyHaven/
-├── docs/                   # Documentation files
+├── docs/                  # Documentation files
 │   ├── cli/               # CLI documentation
 │   ├── daemon/            # Daemon documentation
 │   ├── database/          # Database schema and architecture
@@ -52,10 +52,10 @@ KeyHaven/
 ├── vault-core/            # Core library: crypto, storage, generator
 ├── vault-daemon/          # Background service for IPC
 ├── vault-desktop/         # Tauri-based desktop application
-│   └── src-tauri/        # Rust backend for the desktop app
+│   └── src-tauri/         # Rust backend for the desktop app
 ├── vault-extension/       # Browser extension (future)
-├── Cargo.toml            # Workspace root configuration
-└── README.md             # Project overview
+├── Cargo.toml             # Workspace root configuration
+└── README.md              # Project overview
 ```
 
 ### Directory Descriptions

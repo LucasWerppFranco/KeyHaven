@@ -35,12 +35,41 @@ KeyHaven is a simple password manager that runs locally on Linux. Originally, it
 ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~␍
 ```
 
-## Why?
+## Project Structure
 
+This is the project's folder structure so far; it's also available in [/doc](doc/README.md), where you can find the rest of the project documentation.
 
+```
+KeyHaven/
+├── docs/                   # Documentation files
+│   ├── cli/               # CLI documentation
+│   ├── daemon/            # Daemon documentation
+│   ├── database/          # Database schema and architecture
+│   └── desktop/           # Desktop app documentation
+├── test/                  # Docker-based testing environment
+├── vault/                 # Legacy vault directory (pre-crate structure)
+├── vault-cli/             # Command-line interface (Rust)
+├── vault-core/            # Core library: crypto, storage, generator
+├── vault-daemon/          # Background service for IPC
+├── vault-desktop/         # Tauri-based desktop application
+│   └── src-tauri/        # Rust backend for the desktop app
+├── vault-extension/       # Browser extension (future)
+├── Cargo.toml            # Workspace root configuration
+└── README.md             # Project overview
+```
 
-## Documentation
+### Directory Descriptions
 
-All project documentation is available in [/doc](docs/README.md). Reading it is recommended if you wish to modify the directory to create your own password manager.
+| Directory | Purpose | Language |
+|-----------|---------|----------|
+| `docs/` | Technical documentation, guides, and architecture references | Markdown |
+| `test/` | Docker Compose environment for integration testing | Docker/YAML |
+| `vault-cli/` | Interactive CLI tool for vault management. Communicates with daemon via Unix socket. | Rust |
+| `vault-core/` | **Core library** - encryption (AES-256-GCM), password hashing (Argon2id), SQLite storage, password generator, and search matching. Used by all other components. | Rust |
+| `vault-daemon/` | Background service that holds the decrypted vault in memory. Handles IPC via Unix sockets with auto-lock timeout. | Rust |
+| `vault-desktop/` | Cross-platform GUI application built with Tauri (React frontend + Rust backend) | Rust/TypeScript/React |
+| `vault-extension/` | Browser extension for autofill (planned feature) | TBD |
 
+## Thanks
 
+I'd like to thank you for your interest in the project! Please take another look at the code, modify it, and contribute so your name can be listed here! Thank you so much for visiting this page :D !!!

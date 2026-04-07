@@ -24,9 +24,9 @@ KeyHaven is a simple password manager that runs locally on Linux. Originally, it
     {_ __}  |  |  | ||                     || |  |  |  {____}␍
  _!__|= ||  |  |  | ||                     || |  |  |  ||  |__!_␍
  _I__|  ||__|__|__|_||                     ||_|__|__|__||- |__I_␍
- -|--|- ||--|--|--|-||                     ||-|--|--|--||= |--|-␍
-  |  |  ||  |  |  | ||                     || |  |  |  ||  |  |␍
-  |  |= ||  |  |  | ||                     || |  |  |  ||= |  |␍
+ -|--|- ||--|--|--|-||     ████            ||-|--|--|--||= |--|-␍
+  |  |  ||  |  |  | ||     █  ████████     || |  |  |  ||  |  |␍
+  |  |= ||  |  |  | ||     ████    █ █     || |  |  |  ||= |  |␍
   |  |- ||  |  |  | ||                     || |  |  |  ||= |  |␍
   |  |- ||  |  |  | ||                     || |  |  |  ||- |  | ␍
  _|__|  ||__|__|__|_||:::::::::::::::::::::||_|__|__|__||  |__|_␍
@@ -35,8 +35,12 @@ KeyHaven is a simple password manager that runs locally on Linux. Originally, it
 ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^~~~~~~~~~␍
 ```
 
+## Why?
+
+
+
 ## Documentation
 
 All project documentation is available in [/doc](docs/README.md). Reading it is recommended if you wish to modify the directory to create your own password manager.
 
-## 
+

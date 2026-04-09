@@ -12,6 +12,10 @@ pub async fn run(
     key: &[u8],
     db_path: &std::path::Path,
 ) -> Result<()> {
+    // Display command cover art
+    crate::ascii::display_command_cover("get");
+    println!();
+
     let entry = vault_core::get_entry(key, db_path, query).await?;
 
     let entry = match entry {

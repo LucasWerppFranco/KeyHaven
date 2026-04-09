@@ -9,6 +9,10 @@ pub async fn run(
     key: &[u8],
     db_path: &std::path::Path,
 ) -> Result<()> {
+    // Display command cover art
+    crate::ascii::display_command_cover("list");
+    println!();
+
     let entries = vault_core::list_entries(key, db_path, &search.unwrap_or_default()).await?;
 
     if entries.is_empty() {

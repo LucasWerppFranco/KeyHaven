@@ -1,6 +1,8 @@
 //! ASCII art utilities for the CLI
 
 use colored::Colorize;
+use serde::Deserialize;
+use std::collections::HashMap;
 use terminal_size::{terminal_size, Width};
 
 const COVER_ART: &str = r#"┌──────────────────────────────────────────────────────────────────────┬──────────────────────────────┐
@@ -20,9 +22,38 @@ const SEPARATOR_CHAR: char = '─';
 const MIN_SEPARATOR_LEN: usize = 40;
 const MAX_SEPARATOR_LEN: usize = 120;
 
+/// Cover art data structure from JSON
+#[derive(Deserialize)]
+struct CoverData {
+    #[serde(flatten)]
+    arts: HashMap<String, Vec<String>>,
+}
+
+/// Load cover arts from JSON file
+fn load_cover_arts() -> HashMap<String, Vec<String>> {
+    let json_content = include_str!("../../ascii/cover.json");
+    serde_json::from_str::<CoverData>(json_content)
+        .map(|data| data.arts)
+        .unwrap_or_default()
+}
+
 /// Display the cover art
 pub fn display_cover() {
     println!("{}", COVER_ART.cyan());
+}
+
+/// Display the cover art for a specific command
+pub fn display_command_cover(command: &str) {
+    let arts = load_cover_arts();
+
+    if let Some(art_lines) = arts.get(command) {
+        // Join lines with newlines and print
+        let art = art_lines.join("\n");
+        println!("{}", art.cyan());
+    } else {
+        // Fallback to default cover if command not found
+        display_cover();
+    }
 }
 
 /// Get the terminal width, clamped between MIN and MAX

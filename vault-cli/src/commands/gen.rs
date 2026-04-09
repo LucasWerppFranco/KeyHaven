@@ -10,6 +10,9 @@ pub async fn run(
     symbols: bool,
     copy: bool,
 ) -> Result<()> {
+    // Display command cover art
+    crate::ascii::display_command_cover("gen");
+
     let password = if let Some(word_count) = words {
         // Generate Diceware-style passphrase
         vault_core::generate_passphrase(word_count)

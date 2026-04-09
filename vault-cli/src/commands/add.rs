@@ -10,7 +10,10 @@ pub async fn run(
     key: &[u8],
     db_path: &std::path::Path,
 ) -> Result<()> {
+    // Display command cover art
+    crate::ascii::display_command_cover("add");
     println!();
+
     println!("{}", "  adding new entry".dimmed());
 
     // Title: use CLI argument if provided, otherwise prompt

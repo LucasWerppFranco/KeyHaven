@@ -6,6 +6,10 @@ use std::path::Path;
 use vault_core::init_vault;
 
 pub async fn run(db_path: &Path) -> Result<()> {
+    // Display command cover art
+    crate::ascii::display_command_cover("init");
+    println!();
+
     if db_path.exists() {
         return Err(anyhow::anyhow!(
             "Vault already exists at {}. Use a different path or delete the file.",
@@ -19,7 +23,6 @@ pub async fn run(db_path: &Path) -> Result<()> {
             .with_context(|| format!("Failed to create directory: {}", parent.display()))?;
     }
 
-    println!();
     println!("{}", "  initializing new vault".dimmed());
 
     // Read master password

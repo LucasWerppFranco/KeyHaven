@@ -33,7 +33,10 @@ fn parse_timeout(s: &str) -> Result<Duration> {
 }
 
 pub async fn run(timeout_str: &str, db_path: &Path) -> Result<()> {
+    // Display command cover art
+    crate::ascii::display_command_cover("unlock");
     println!();
+
     println!("{}", "  unlocking vault".dimmed());
 
     crate::ascii::print_minimal_prompt("master password: ");

@@ -20,11 +20,6 @@ async fn main() -> Result<()> {
         colored::control::set_override(false);
     }
 
-    // Display cover art at startup in interactive terminals
-    if std::io::stdout().is_terminal() {
-        ascii::display_cover();
-    }
-
     let cli = Cli::parse();
 
     // Resolve paths

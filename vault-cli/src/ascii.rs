@@ -31,7 +31,7 @@ struct CoverData {
 
 /// Load cover arts from JSON file
 fn load_cover_arts() -> HashMap<String, Vec<String>> {
-    let json_content = include_str!("../../ascii/cover.json");
+    let json_content = include_str!("../ascii/cover.json");
     serde_json::from_str::<CoverData>(json_content)
         .map(|data| data.arts)
         .unwrap_or_default()

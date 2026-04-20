@@ -3,8 +3,6 @@ use colored::Colorize;
 use sha1::{Digest, Sha1};
 
 pub async fn run(password: &str) -> Result<()> {
-    // Display command cover art
-    crate::ascii::display_command_cover("check");
     println!();
 
     println!("{}", "Checking password...".bold().cyan());

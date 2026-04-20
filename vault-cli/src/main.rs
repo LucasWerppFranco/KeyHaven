@@ -22,6 +22,22 @@ async fn main() -> Result<()> {
 
     let cli = Cli::parse();
 
+    // Display command-specific cover art in interactive terminals
+    if std::io::stdout().is_terminal() {
+        let command_name = match &cli.command {
+            Commands::Init => "init",
+            Commands::Unlock { .. } => "unlock",
+            Commands::Lock => "lock",
+            Commands::List { .. } => "list",
+            Commands::Get { .. } => "get",
+            Commands::Add { .. } => "add",
+            Commands::Gen { .. } => "gen",
+            Commands::Check { .. } => "check",
+            Commands::Rofi { .. } => "list",
+        };
+        ascii::display_command_cover(command_name);
+    }
+
     // Resolve paths
     let db_path = cli.db_path.unwrap_or_else(commands::default_db_path);
     let _socket_path = cli

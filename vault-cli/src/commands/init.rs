@@ -6,8 +6,6 @@ use std::path::Path;
 use vault_core::init_vault;
 
 pub async fn run(db_path: &Path) -> Result<()> {
-    // Display command cover art
-    crate::ascii::display_command_cover("init");
     println!();
 
     if db_path.exists() {
